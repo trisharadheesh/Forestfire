@@ -1,0 +1,124 @@
+
+<html>
+
+    <head>
+    <style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+input[type=text], textarea {
+  width:100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+input[type=submit] {
+ 
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+
+#container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+    visibility: hidden;
+}
+.my{
+  border: 2px solid black;
+  padding: 30px;
+   text-align: center;
+   font-size:23px;
+   background-color:MediumSeaGreen;
+   color:white
+}
+</style>
+        
+        <script>
+        let appId='edf7d97860f9ebd8ff138a93e4cf04ce';
+        let units='metric';
+
+
+
+function searchWeather(searchTerm) {
+   
+    fetch(`http://api.openweathermap.org/data/2.5/weather?q=${searchTerm}&APPID=${appId}&units=${units}`)
+        .then((result) => {
+            return result.json();
+        }).then((res) => {
+            init(res);
+    });
+}
+
+function init(resultFromServer) {
+    
+    document.getElementById('temperature').value= Math.floor(resultFromServer.main.temp);
+    document.getElementById('humidity').value=resultFromServer.main.humidity;
+
+ 
+     let weatherContainer = document.getElementById('container');
+    weatherContainer.style.visibility = 'visible';
+}
+
+
+
+function get(){
+
+    let searchTerm = document.getElementById('searchInput').value;
+    if(searchTerm)
+        searchWeather(searchTerm);
+        
+}
+
+        </script>
+    </head>
+
+    <body>
+    <h1><center>Forest Fire Prediction</center></h1><br>
+            <input  type="text" placeholder="Enter your Loaction" id="searchInput">
+            <br>
+            <button id="searchBtn" onclick="get()">Search</button>
+      
+     <br>
+     <br>
+      <br>
+     <br>  
+     
+<div id="container">
+               <form action="{{ url_for('predict')}}" method="post">
+                <label>Oxygen in ppm</LABEL>
+                <input type="text" name="Oxygen" required="required"><br>
+               <label>Temperature</LABEL>
+               <input type="text" name="Temperature" id="temperature"><br>
+              
+                <label>Humidity</LABEL>
+                <input type="text" name="Humidity" id="humidity">
+        
+
+            <br><br><br>
+            
+            <button type="submit" >Predict</button> 
+          
+            </form>
+</div>
+ <br>
+ <br>
+  <div class="my"> {{ prediction_text }}</div>
+  <script>
+   weatherContainer.style.visibility = 'visible';
+   </script>
+    </body>
+</html>
